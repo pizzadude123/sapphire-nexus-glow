@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
+import heroVideo from '@/assets/hero-video.mp4';
 import heroImage from '@/assets/hero-sapphire.jpg';
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const ScrambleText = ({ text, className }: { text: string; className?: string }) => {
-  const ref = useRef<HTMLSpanElement>(null);
   const [displayText, setDisplayText] = useState(text);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -38,12 +38,7 @@ const ScrambleText = ({ text, className }: { text: string; className?: string })
   }, []);
 
   return (
-    <span
-      ref={ref}
-      className={className}
-      onMouseEnter={scramble}
-      style={{ cursor: 'default' }}
-    >
+    <span className={className} onMouseEnter={scramble} style={{ cursor: 'default' }}>
       {displayText}
     </span>
   );
@@ -68,9 +63,7 @@ const GlowingLetter = ({ char, delay }: { char: string; delay: number }) => {
     <span
       ref={ref}
       className="inline-block transition-colors duration-300 hover:text-primary"
-      style={{
-        textShadow: '0 0 10px hsl(217 90% 60% / 0.3)',
-      }}
+      style={{ textShadow: '0 0 10px hsl(217 90% 60% / 0.3)' }}
     >
       {char === ' ' ? '\u00A0' : char}
     </span>
@@ -83,16 +76,14 @@ export const HeroSection = () => {
   const titleLine2Ref = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const mouseGlowRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setMousePos({ x, y });
 
     if (mouseGlowRef.current) {
       gsap.to(mouseGlowRef.current, {
@@ -109,9 +100,9 @@ export const HeroSection = () => {
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
       tl.fromTo(
-        imageRef.current,
+        videoRef.current,
         { scale: 1.3, opacity: 0 },
-        { scale: 1, opacity: 0.35, duration: 2 }
+        { scale: 1, opacity: 0.5, duration: 2 }
       )
         .fromTo(
           titleLine1Ref.current,
@@ -139,7 +130,7 @@ export const HeroSection = () => {
         );
 
       // Parallax on scroll
-      gsap.to(imageRef.current, {
+      gsap.to(videoRef.current, {
         yPercent: 30,
         ease: 'none',
         scrollTrigger: {
@@ -163,15 +154,20 @@ export const HeroSection = () => {
       className="relative h-screen flex items-center justify-center overflow-hidden"
       onMouseMove={handleMouseMove}
     >
-      {/* Background Image */}
+      {/* Video Background */}
       <div className="absolute inset-0">
-        <img
-          ref={imageRef}
-          src={heroImage}
-          alt="House of Sapphire"
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={heroImage}
           className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background" />
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/30 to-background" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-transparent to-background/50" />
       </div>
 
@@ -203,15 +199,13 @@ export const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-6xl">
-        {/* HOUSE OF - Scramble on hover */}
         <div className="overflow-hidden mb-2" ref={titleLine1Ref}>
           <ScrambleText
             text="HOUSE OF"
             className="block text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter leading-none text-gradient-sapphire"
-            />
+          />
         </div>
 
-        {/* SAPPHIRE - Each letter glows individually */}
         <div className="overflow-hidden mb-8" ref={titleLine2Ref}>
           <span
             className="block text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter leading-none text-foreground"
@@ -223,7 +217,6 @@ export const HeroSection = () => {
           </span>
         </div>
 
-        {/* Tagline with glowing serif */}
         <p
           ref={subtitleRef}
           className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"

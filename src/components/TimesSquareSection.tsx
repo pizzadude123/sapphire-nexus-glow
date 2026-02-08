@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import timesSquareVideo from '@/assets/times-square-video.mp4';
 import timesSquareImage from '@/assets/times-square.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -32,7 +33,7 @@ const showcaseItems = [
 export const TimesSquareSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export const TimesSquareSection = () => {
       );
 
       gsap.fromTo(
-        imageRef.current,
+        videoRef.current,
         { y: 80, opacity: 0, scale: 0.95 },
         {
           y: 0,
@@ -62,7 +63,7 @@ export const TimesSquareSection = () => {
           duration: 1.2,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: imageRef.current,
+            trigger: videoRef.current,
             start: 'top 80%',
           },
         }
@@ -114,14 +115,19 @@ export const TimesSquareSection = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Featured image */}
-          <div ref={imageRef} className="relative">
+          {/* Featured video */}
+          <div ref={videoRef} className="relative">
             <div className="relative rounded-2xl overflow-hidden group">
-              <img
-                src={timesSquareImage}
-                alt="House of Sapphire on Times Square"
-                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-              />
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster={timesSquareImage}
+                className="w-full h-auto aspect-video object-cover transition-transform duration-700 group-hover:scale-105"
+              >
+                <source src={timesSquareVideo} type="video/mp4" />
+              </video>
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
                 <span className="text-xs tracking-[0.3em] uppercase text-accent font-body">
@@ -130,6 +136,14 @@ export const TimesSquareSection = () => {
                 <h3 className="text-2xl font-bold mt-1 font-display">
                   Times Square Takeover
                 </h3>
+              </div>
+
+              {/* Play indicator */}
+              <div className="absolute top-4 right-4 flex items-center gap-2 bg-background/50 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+                <span className="text-[10px] tracking-wider uppercase text-foreground/80 font-body">
+                  Live
+                </span>
               </div>
             </div>
             {/* Glow decoration */}
