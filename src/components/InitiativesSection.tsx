@@ -1,75 +1,47 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import {
-  Lightbulb,
-  Palette,
-  TrendingUp,
-  Heart,
-  Globe,
-  Film,
-} from 'lucide-react';
+import munVideo from '@/assets/initiative-mun.mp4';
+import racingVideo from '@/assets/initiative-racing.mp4';
+import sportsVideo from '@/assets/initiative-sports.mp4';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const projects = [
+const initiatives = [
   {
-    name: 'Sapphire Labs',
+    name: 'Sapphire MUN',
+    tagline: 'Where Voices Shape the World',
     description:
-      'Pioneering next-generation technology through fearless R&D and rapid innovation cycles.',
-    icon: Lightbulb,
-    status: 'Active',
-    color: 'primary',
+      'A prestigious Model United Nations platform where the next generation of leaders debate, negotiate, and drive diplomatic solutions on the global stage.',
+    video: munVideo,
+    number: '01',
   },
   {
-    name: 'Sapphire Studios',
+    name: 'Sapphire Racing League',
+    tagline: 'Speed. Precision. Glory.',
     description:
-      'A creative powerhouse delivering world-class design, branding, and visual experiences.',
-    icon: Palette,
-    status: 'Active',
-    color: 'accent',
+      'An elite racing competition pushing the boundaries of speed and engineering — where champions are forged on the track.',
+    video: racingVideo,
+    number: '02',
   },
   {
-    name: 'Sapphire Ventures',
+    name: 'League of Sapphire',
+    tagline: 'Compete. Conquer. Celebrate.',
     description:
-      'Strategic investments in disruptive startups and transformative technologies.',
-    icon: TrendingUp,
-    status: 'Active',
-    color: 'primary',
-  },
-  {
-    name: 'Sapphire Foundation',
-    description:
-      'Driving social change through philanthropy, education, and community development.',
-    icon: Heart,
-    status: 'Active',
-    color: 'accent',
-  },
-  {
-    name: 'Sapphire Digital',
-    description:
-      'Building scalable digital products and platforms that reach millions worldwide.',
-    icon: Globe,
-    status: 'Coming Soon',
-    color: 'primary',
-  },
-  {
-    name: 'Sapphire Media',
-    description:
-      'Content creation and entertainment that inspires, educates, and captivates audiences.',
-    icon: Film,
-    status: 'Coming Soon',
-    color: 'accent',
+      'A multi-sport league uniting athletes across disciplines in fierce competition, team spirit, and the relentless pursuit of excellence.',
+    video: sportsVideo,
+    number: '03',
   },
 ];
 
 export const InitiativesSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Heading reveal
       gsap.fromTo(
         headingRef.current,
         { y: 60, opacity: 0 },
@@ -80,166 +52,150 @@ export const InitiativesSection = () => {
           ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 70%',
+            start: 'top 80%',
           },
         }
       );
 
-      const cards = cardsRef.current?.querySelectorAll('.initiative-card');
-      if (cards) {
-        gsap.fromTo(
-          cards,
-          { y: 80, opacity: 0, scale: 0.95 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.8,
-            stagger: 0.12,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 80%',
-            },
-          }
-        );
-      }
+      // Horizontal scroll
+      const container = containerRef.current;
+      if (!container) return;
+
+      const panels = container.querySelectorAll('.initiative-panel');
+      const totalScroll = (panels.length - 1) * 100;
+
+      gsap.to(container, {
+        xPercent: -totalScroll / panels.length * (panels.length - 1),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: `+=${window.innerHeight * panels.length}`,
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+        },
+      });
+
+      // Animate each panel's content
+      panels.forEach((panel, i) => {
+        const number = panel.querySelector('.panel-number');
+        const name = panel.querySelector('.panel-name');
+        const tagline = panel.querySelector('.panel-tagline');
+        const desc = panel.querySelector('.panel-desc');
+        const line = panel.querySelector('.panel-line');
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: `top+=${i * window.innerHeight * 0.8} top`,
+            end: `top+=${(i + 0.8) * window.innerHeight * 0.8} top`,
+            scrub: 1,
+          },
+        });
+
+        tl.fromTo(number, { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 0.15, duration: 0.3 }, 0)
+          .fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 0.3 }, 0)
+          .fromTo(name, { yPercent: 120, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4 }, 0.1)
+          .fromTo(tagline, { yPercent: 80, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.3 }, 0.2)
+          .fromTo(desc, { yPercent: 60, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.3 }, 0.3);
+      });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section
-      id="initiatives"
-      ref={sectionRef}
-      className="relative py-24 md:py-32 px-6"
-    >
-      <div className="max-w-7xl mx-auto">
-        {/* Heading */}
-        <div ref={headingRef} className="text-center mb-16">
-          <p className="text-xs tracking-[0.4em] uppercase text-accent mb-4 font-body">
-            Our Ecosystem
-          </p>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter leading-tight font-display">
-            Initiatives &{' '}
-            <span className="text-gradient-sapphire">Projects</span>
-          </h2>
-          <p className="text-muted-foreground mt-4 max-w-2xl mx-auto font-body">
-            Each venture operates independently while drawing strength from the
-            collective. Together, they form the sapphire constellation.
-          </p>
-        </div>
+    <section id="initiatives" ref={sectionRef} className="relative">
+      {/* Heading - shown before pin starts */}
+      <div ref={headingRef} className="text-center py-24 md:py-32 px-6">
+        <p className="text-xs tracking-[0.4em] uppercase text-accent mb-4 font-body">
+          Our Ecosystem
+        </p>
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter leading-tight font-display">
+          Initiatives &{' '}
+          <span className="text-gradient-sapphire">Projects</span>
+        </h2>
+        <p className="text-muted-foreground mt-4 max-w-2xl mx-auto font-body">
+          Three pillars. One vision. Scroll to explore each initiative.
+        </p>
+      </div>
 
-        {/* Cards grid */}
+      {/* Horizontal scroll container */}
+      <div className="h-screen overflow-hidden">
         <div
-          ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          ref={containerRef}
+          className="flex h-full"
+          style={{ width: `${initiatives.length * 100}vw` }}
         >
-          {projects.map((project) => (
-            <ProjectCard key={project.name} project={project} />
+          {initiatives.map((initiative) => (
+            <div
+              key={initiative.number}
+              className="initiative-panel relative w-screen h-full flex-shrink-0 overflow-hidden"
+            >
+              {/* Video background */}
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                className="absolute inset-0 w-full h-full object-cover"
+              >
+                <source src={initiative.video} type="video/mp4" />
+              </video>
+
+              {/* Dark overlay */}
+              <div className="absolute inset-0 bg-background/70" />
+              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/30" />
+
+              {/* Content */}
+              <div className="relative z-10 h-full flex flex-col justify-center px-8 md:px-20 lg:px-32 max-w-4xl">
+                {/* Large number */}
+                <span
+                  className="panel-number text-[8rem] md:text-[12rem] lg:text-[16rem] font-extrabold leading-none text-primary/15 absolute top-1/2 -translate-y-1/2 right-8 md:right-20 select-none font-display opacity-0"
+                  style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
+                >
+                  {initiative.number}
+                </span>
+
+                {/* Accent line */}
+                <div className="panel-line h-[2px] w-24 bg-gradient-to-r from-primary to-accent mb-8 origin-left" style={{ transform: 'scaleX(0)' }} />
+
+                {/* Initiative name */}
+                <h3
+                  className="panel-name text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-none mb-4 text-foreground text-glow-sapphire opacity-0"
+                  style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
+                >
+                  {initiative.name}
+                </h3>
+
+                {/* Tagline */}
+                <p className="panel-tagline text-lg md:text-2xl text-accent font-semibold tracking-wide mb-6 font-body opacity-0">
+                  {initiative.tagline}
+                </p>
+
+                {/* Description */}
+                <p className="panel-desc text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed font-body opacity-0">
+                  {initiative.description}
+                </p>
+
+                {/* CTA */}
+                <div className="panel-desc mt-8 opacity-0">
+                  <button className="btn-outline-sapphire text-sm tracking-widest uppercase">
+                    Learn More →
+                  </button>
+                </div>
+              </div>
+
+              {/* Corner decorations */}
+              <div className="absolute top-8 left-8 w-12 h-12 border-l-2 border-t-2 border-primary/30 pointer-events-none" />
+              <div className="absolute bottom-8 right-8 w-12 h-12 border-r-2 border-b-2 border-primary/30 pointer-events-none" />
+            </div>
           ))}
         </div>
       </div>
     </section>
-  );
-};
-
-interface ProjectCardProps {
-  project: (typeof projects)[0];
-}
-
-const ProjectCard = ({ project }: ProjectCardProps) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [rotation, setRotation] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!cardRef.current) return;
-      const rect = cardRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      setRotation({ x: y * -10, y: x * 10 });
-    },
-    []
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    setRotation({ x: 0, y: 0 });
-  }, []);
-
-  const Icon = project.icon;
-
-  return (
-    <div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="initiative-card group relative rounded-2xl bg-card border border-border/50 p-8 cursor-pointer card-hover-glow overflow-hidden"
-      style={{
-        transform: `perspective(1000px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-        transition: 'transform 0.15s ease-out',
-      }}
-    >
-      {/* Background glow effect */}
-      <div
-        className={`absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-700 ${
-          project.color === 'primary' ? 'bg-primary' : 'bg-accent'
-        }`}
-      />
-
-      {/* Icon */}
-      <div
-        className={`relative w-12 h-12 rounded-xl flex items-center justify-center mb-6 border transition-colors duration-300 ${
-          project.color === 'primary'
-            ? 'border-primary/30 group-hover:border-primary/60'
-            : 'border-accent/30 group-hover:border-accent/60'
-        }`}
-      >
-        <Icon
-          className={`w-6 h-6 transition-colors duration-300 ${
-            project.color === 'primary'
-              ? 'text-primary group-hover:text-sapphire-glow'
-              : 'text-accent group-hover:text-gold-light'
-          }`}
-        />
-      </div>
-
-      {/* Status badge */}
-      <div className="flex items-center gap-2 mb-4">
-        <span
-          className={`inline-flex items-center gap-1.5 text-[10px] tracking-wider uppercase px-3 py-1 rounded-full font-medium font-body ${
-            project.status === 'Active'
-              ? 'bg-primary/10 text-primary border border-primary/20'
-              : 'bg-accent/10 text-accent border border-accent/20'
-          }`}
-        >
-          <span
-            className={`w-1.5 h-1.5 rounded-full ${
-              project.status === 'Active'
-                ? 'bg-primary animate-pulse'
-                : 'bg-accent'
-            }`}
-          />
-          {project.status}
-        </span>
-      </div>
-
-      {/* Content */}
-      <h3 className="text-xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors duration-300 font-display">
-        {project.name}
-      </h3>
-      <p className="text-sm text-muted-foreground leading-relaxed font-body">
-        {project.description}
-      </p>
-
-      {/* Arrow indicator */}
-      <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground group-hover:text-primary transition-all duration-300 font-body">
-        <span className="tracking-wider uppercase">Explore</span>
-        <span className="transform group-hover:translate-x-2 transition-transform duration-300">
-          →
-        </span>
-      </div>
-    </div>
   );
 };
