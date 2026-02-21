@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import timesSquareVideo from '@/assets/times-square-video.mp4';
-import timesSquareImage from '@/assets/times-square.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,7 +11,7 @@ const showcaseItems = [
     subtitle: 'Digital Billboard Campaign',
     date: '2024',
     description:
-      'Our flagship campaign illuminated one of the world\'s most iconic intersections, reaching millions of viewers.',
+      "Our flagship campaign illuminated one of the world's most iconic intersections, reaching millions of viewers.",
   },
   {
     title: 'Dubai Mall',
@@ -34,56 +33,80 @@ export const TimesSquareSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        headingRef.current,
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-          },
-        }
-      );
+      // Heading — split word reveal
+      const headingWords = headingRef.current?.querySelectorAll('.reveal-word');
+      if (headingWords) {
+        gsap.fromTo(
+          headingWords,
+          { y: 80, opacity: 0, rotateX: 40 },
+          {
+            y: 0,
+            opacity: 1,
+            rotateX: 0,
+            duration: 1,
+            stagger: 0.08,
+            ease: 'power4.out',
+            scrollTrigger: { trigger: headingRef.current, start: 'top 80%' },
+          }
+        );
+      }
 
+      // Video — scale up from small with parallax
       gsap.fromTo(
         videoRef.current,
-        { y: 80, opacity: 0, scale: 0.95 },
+        { scale: 0.7, opacity: 0, borderRadius: '2rem' },
         {
-          y: 0,
-          opacity: 1,
           scale: 1,
-          duration: 1.2,
+          opacity: 1,
+          borderRadius: '1rem',
+          duration: 1.4,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: videoRef.current,
-            start: 'top 80%',
+            start: 'top 85%',
+            end: 'top 20%',
+            scrub: 1,
           },
         }
       );
 
-      const items = listRef.current?.querySelectorAll('.showcase-item');
-      if (items) {
+      // Counter stats
+      const counters = counterRef.current?.querySelectorAll('.counter-item');
+      if (counters) {
         gsap.fromTo(
-          items,
-          { x: 60, opacity: 0 },
+          counters,
+          { scale: 0.5, opacity: 0, y: 40 },
           {
-            x: 0,
+            scale: 1,
             opacity: 1,
+            y: 0,
             duration: 0.8,
+            stagger: 0.15,
+            ease: 'back.out(1.7)',
+            scrollTrigger: { trigger: counterRef.current, start: 'top 80%' },
+          }
+        );
+      }
+
+      // Showcase cards — stagger from bottom with rotation
+      const cards = cardsRef.current?.querySelectorAll('.showcase-card');
+      if (cards) {
+        gsap.fromTo(
+          cards,
+          { y: 100, opacity: 0, rotateY: 8 },
+          {
+            y: 0,
+            opacity: 1,
+            rotateY: 0,
+            duration: 1,
             stagger: 0.2,
             ease: 'power3.out',
-            scrollTrigger: {
-              trigger: listRef.current,
-              start: 'top 80%',
-            },
+            scrollTrigger: { trigger: cardsRef.current, start: 'top 80%' },
           }
         );
       }
@@ -92,90 +115,137 @@ export const TimesSquareSection = () => {
     return () => ctx.revert();
   }, []);
 
+  const headingText = 'As Seen on Times Square';
+
   return (
     <section
       id="showcase"
       ref={sectionRef}
-      className="relative py-24 md:py-32 px-6"
+      className="relative py-32 md:py-44 px-6 overflow-hidden"
     >
+      {/* Background accent */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full pointer-events-none opacity-[0.04]"
+        style={{ background: 'radial-gradient(circle, hsl(var(--accent)), transparent 70%)' }}
+      />
+
       <div className="max-w-7xl mx-auto">
-        {/* Heading */}
-        <div ref={headingRef} className="text-center mb-16">
-          <p className="text-xs tracking-[0.4em] uppercase text-accent mb-4 font-body">
+        {/* Heading — word-by-word reveal */}
+        <div ref={headingRef} className="text-center mb-6" style={{ perspective: '800px' }}>
+          <p className="reveal-word text-xs tracking-[0.4em] uppercase text-accent mb-4 font-body">
             Global Presence
           </p>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter leading-tight font-display">
-            As Seen on{' '}
-            <span className="text-gradient-gold">Times Square</span>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter leading-tight font-display">
+            {headingText.split(' ').map((word, i) => (
+              <span key={i} className="reveal-word inline-block mr-[0.3em]">
+                {word === 'Times' || word === 'Square' ? (
+                  <span className="text-gradient-gold">{word}</span>
+                ) : (
+                  word
+                )}
+              </span>
+            ))}
           </h2>
-          <p className="text-muted-foreground mt-4 max-w-2xl mx-auto font-body">
-            Our brand has been featured on some of the world's most prestigious
-            advertising platforms.
+          <p className="reveal-word text-muted-foreground mt-6 max-w-2xl mx-auto text-lg font-body">
+            Our brand shines on the world's most prestigious stages — from iconic billboards to immersive digital installations.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Featured video */}
-          <div ref={videoRef} className="relative">
-            <div className="relative rounded-2xl overflow-hidden group">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                poster={timesSquareImage}
-                className="w-full h-auto aspect-video object-cover transition-transform duration-700 group-hover:scale-105"
+        {/* Impact counters */}
+        <div ref={counterRef} className="flex flex-wrap justify-center gap-8 md:gap-16 my-16">
+          {[
+            { value: '50M+', label: 'Impressions' },
+            { value: '3', label: 'Continents' },
+            { value: '12', label: 'Campaigns' },
+          ].map((stat) => (
+            <div key={stat.label} className="counter-item text-center">
+              <div
+                className="text-4xl md:text-5xl font-extrabold text-gradient-gold font-display mb-1"
+                style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
               >
-                <source src={timesSquareVideo} type="video/mp4" />
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6">
-                <span className="text-xs tracking-[0.3em] uppercase text-accent font-body">
-                  Featured
-                </span>
-                <h3 className="text-2xl font-bold mt-1 font-display">
-                  Times Square Takeover
-                </h3>
+                {stat.value}
               </div>
-
-              {/* Play indicator */}
-              <div className="absolute top-4 right-4 flex items-center gap-2 bg-background/50 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
-                <span className="text-[10px] tracking-wider uppercase text-foreground/80 font-body">
-                  Live
-                </span>
+              <div className="text-xs tracking-[0.3em] uppercase text-muted-foreground font-body">
+                {stat.label}
               </div>
             </div>
-            {/* Glow decoration */}
-            <div className="absolute -z-10 inset-0 blur-3xl opacity-20 bg-primary rounded-2xl transform scale-110" />
+          ))}
+        </div>
+
+        {/* Featured video — scales up on scroll */}
+        <div ref={videoRef} className="relative rounded-2xl overflow-hidden mb-20 group">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-105"
+          >
+            <source src={timesSquareVideo} type="video/mp4" />
+          </video>
+
+          {/* Subtle gradient for text */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent pointer-events-none" />
+
+          <div className="absolute bottom-8 left-8 right-8 flex items-end justify-between">
+            <div>
+              <span className="text-xs tracking-[0.3em] uppercase text-accent font-body">
+                Featured
+              </span>
+              <h3
+                className="text-3xl md:text-4xl font-extrabold mt-1 text-glow-sapphire"
+                style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
+              >
+                Times Square Takeover
+              </h3>
+            </div>
+            <div className="flex items-center gap-2 bg-card/60 backdrop-blur-sm px-4 py-2 rounded-full border border-border/30">
+              <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+              <span className="text-[10px] tracking-wider uppercase text-foreground/80 font-body">
+                Live
+              </span>
+            </div>
           </div>
 
-          {/* Showcase list */}
-          <div ref={listRef} className="space-y-6">
-            {showcaseItems.map((item) => (
-              <div
-                key={item.title}
-                className="showcase-item group p-6 rounded-2xl bg-card/50 border border-border/50 card-hover-glow cursor-pointer"
+          {/* Corner dots */}
+          <div className="absolute top-6 left-6 w-10 h-10 border-l-2 border-t-2 border-primary/40 pointer-events-none" />
+          <div className="absolute top-6 right-6 w-10 h-10 border-r-2 border-t-2 border-primary/40 pointer-events-none" />
+          <div className="absolute bottom-6 left-6 w-10 h-10 border-l-2 border-b-2 border-primary/40 pointer-events-none" />
+          <div className="absolute bottom-6 right-6 w-10 h-10 border-r-2 border-b-2 border-primary/40 pointer-events-none" />
+        </div>
+
+        {/* Showcase cards */}
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{ perspective: '1000px' }}>
+          {showcaseItems.map((item, index) => (
+            <div
+              key={item.title}
+              className="showcase-card group relative p-8 rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden cursor-pointer transition-all duration-500 hover:border-primary/40 hover:shadow-[0_0_40px_hsl(var(--primary)/0.1)]"
+            >
+              {/* Number */}
+              <span
+                className="absolute top-4 right-6 text-6xl font-extrabold text-primary/5 select-none"
+                style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="text-lg font-bold group-hover:text-primary transition-colors duration-300 font-display">
-                      {item.title}
-                    </h3>
-                    <p className="text-sm text-accent font-body">
-                      {item.subtitle}
-                    </p>
-                  </div>
-                  <span className="text-xs text-muted-foreground bg-muted/50 px-3 py-1 rounded-full font-body">
-                    {item.date}
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground leading-relaxed font-body">
-                  {item.description}
-                </p>
+                0{index + 1}
+              </span>
+
+              <span className="inline-block text-[10px] tracking-[0.3em] uppercase text-accent mb-4 px-3 py-1 rounded-full border border-accent/20 font-body">
+                {item.date}
+              </span>
+              <h3 className="text-xl font-bold mb-1 group-hover:text-primary transition-colors duration-300 font-display">
+                {item.title}
+              </h3>
+              <p className="text-sm text-accent mb-4 font-body">{item.subtitle}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed font-body">
+                {item.description}
+              </p>
+
+              {/* Hover arrow */}
+              <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground group-hover:text-primary transition-all duration-300 font-body">
+                <span className="tracking-wider uppercase">View Campaign</span>
+                <span className="transform group-hover:translate-x-2 transition-transform duration-300">→</span>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
