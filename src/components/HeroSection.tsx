@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import heroVideo from '@/assets/hero-video.mp4';
 import heroImage from '@/assets/hero-sapphire.jpg';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -78,6 +81,7 @@ export const HeroSection = () => {
   const ctaRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const mouseGlowRef = useRef<HTMLDivElement>(null);
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!containerRef.current) return;
@@ -127,6 +131,12 @@ export const HeroSection = () => {
           { y: 30, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.6 },
           '-=0.3'
+        )
+        .fromTo(
+          scrollIndicatorRef.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.6 },
+          '-=0.1'
         );
 
       // Parallax on scroll
@@ -136,6 +146,19 @@ export const HeroSection = () => {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+
+      // Title fades out on scroll
+      gsap.to([titleLine1Ref.current, titleLine2Ref.current, subtitleRef.current, ctaRef.current], {
+        y: -60,
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: '60% top',
           end: 'bottom top',
           scrub: true,
         },
@@ -240,7 +263,7 @@ export const HeroSection = () => {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
+      <div ref={scrollIndicatorRef} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10 opacity-0">
         <span
           className="text-xs text-muted-foreground tracking-[0.3em] uppercase"
           style={{ fontFamily: "'Times New Roman', 'Georgia', serif" }}

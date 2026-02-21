@@ -22,22 +22,44 @@ const partners = [
 export const TrustedBy = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLParagraphElement>(null);
+  const dividerTopRef = useRef<HTMLDivElement>(null);
+  const dividerBottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Title fade in
       gsap.fromTo(
         titleRef.current,
-        { opacity: 0, y: 20 },
+        { opacity: 0, y: 20, letterSpacing: '0.1em' },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          letterSpacing: '0.4em',
+          duration: 1,
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 80%',
           },
         }
       );
+
+      // Dividers expand from center
+      [dividerTopRef, dividerBottomRef].forEach((ref) => {
+        gsap.fromTo(
+          ref.current,
+          { scaleX: 0 },
+          {
+            scaleX: 1,
+            duration: 1.2,
+            ease: 'power3.inOut',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 80%',
+            },
+          }
+        );
+      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -49,7 +71,7 @@ export const TrustedBy = () => {
       ref={sectionRef}
       className="relative py-20 overflow-hidden"
     >
-      <div className="section-divider mb-16" />
+      <div ref={dividerTopRef} className="section-divider mb-16 origin-center" />
 
       <p
         ref={titleRef}
@@ -60,7 +82,6 @@ export const TrustedBy = () => {
 
       {/* Marquee */}
       <div className="relative">
-        {/* Gradient fade edges */}
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
@@ -78,7 +99,7 @@ export const TrustedBy = () => {
         </div>
       </div>
 
-      <div className="section-divider mt-16" />
+      <div ref={dividerBottomRef} className="section-divider mt-16 origin-center" />
     </section>
   );
 };

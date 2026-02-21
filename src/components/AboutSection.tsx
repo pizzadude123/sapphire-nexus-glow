@@ -21,65 +21,99 @@ export const AboutSection = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        headingRef.current,
-        { x: -80, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-          },
-        }
-      );
+      // Heading — each word slides up
+      const words = headingRef.current?.querySelectorAll('.word');
+      if (words) {
+        gsap.fromTo(
+          words,
+          { y: 100, opacity: 0, rotateX: 30 },
+          {
+            y: 0,
+            opacity: 1,
+            rotateX: 0,
+            duration: 1,
+            stagger: 0.06,
+            ease: 'power4.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 70%',
+            },
+          }
+        );
+      }
 
-      gsap.fromTo(
-        textRef.current,
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          delay: 0.2,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-          },
-        }
-      );
+      // Text paragraphs — stagger reveal
+      const paras = textRef.current?.querySelectorAll('.about-para');
+      if (paras) {
+        gsap.fromTo(
+          paras,
+          { y: 50, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: textRef.current,
+              start: 'top 75%',
+            },
+          }
+        );
+      }
 
-      gsap.fromTo(
-        imageRef.current,
-        { x: 80, opacity: 0, scale: 0.9 },
-        {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1.2,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-          },
-        }
-      );
+      // Image — parallax + reveal
+      if (imageRef.current) {
+        const img = imageRef.current.querySelector('img');
+        gsap.fromTo(
+          imageRef.current,
+          { x: 80, opacity: 0, scale: 0.9 },
+          {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 1.2,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 70%',
+            },
+          }
+        );
 
-      // Stats counter animation
+        // Inner image parallax
+        if (img) {
+          gsap.fromTo(
+            img,
+            { yPercent: -10, scale: 1.15 },
+            {
+              yPercent: 10,
+              scale: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: imageRef.current,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1,
+              },
+            }
+          );
+        }
+      }
+
+      // Stats counter animation — scale in with bounce
       const statEls = statsRef.current?.querySelectorAll('.stat-item');
       if (statEls) {
         gsap.fromTo(
           statEls,
-          { y: 40, opacity: 0 },
+          { y: 60, opacity: 0, scale: 0.8 },
           {
             y: 0,
             opacity: 1,
-            duration: 0.6,
-            stagger: 0.15,
-            ease: 'power3.out',
+            scale: 1,
+            duration: 0.7,
+            stagger: 0.12,
+            ease: 'back.out(1.7)',
             scrollTrigger: {
               trigger: statsRef.current,
               start: 'top 85%',
@@ -91,6 +125,8 @@ export const AboutSection = () => {
 
     return () => ctx.revert();
   }, []);
+
+  const headingWords = ['Defining', 'the', 'Future,', 'One', 'Venture', 'at', 'a', 'Time'];
 
   return (
     <section
@@ -106,25 +142,32 @@ export const AboutSection = () => {
             <h2
               ref={headingRef}
               className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter leading-tight mb-8 font-display"
+              style={{ perspective: '600px' }}
             >
-              Defining the{' '}
-              <span className="text-gradient-sapphire">Future</span>,<br />
-              One Venture at a Time
+              {headingWords.map((word, i) => (
+                <span key={i} className="word inline-block mr-[0.3em]">
+                  {word === 'Future,' ? (
+                    <span className="text-gradient-sapphire">{word}</span>
+                  ) : (
+                    word
+                  )}
+                </span>
+              ))}
             </h2>
             <div ref={textRef}>
-              <p className="text-lg text-muted-foreground mb-6 leading-relaxed font-body">
+              <p className="about-para text-lg text-muted-foreground mb-6 leading-relaxed font-body">
                 House of Sapphire is the nexus of innovation — a parent company
                 overseeing a diverse portfolio of ventures spanning technology,
                 design, social impact, and beyond. We don't just build companies;
                 we architect ecosystems.
               </p>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed font-body">
+              <p className="about-para text-lg text-muted-foreground mb-8 leading-relaxed font-body">
                 Founded on the principle that bold ideas deserve bold execution,
                 HOS connects visionaries, technologists, and changemakers under
                 one roof. Every project carries the sapphire standard — a
                 commitment to excellence that defines everything we touch.
               </p>
-              <button className="btn-sapphire">Our Story</button>
+              <button className="about-para btn-sapphire">Our Story</button>
             </div>
           </div>
 
