@@ -5,6 +5,7 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import { TrustedBy } from '@/components/TrustedBy';
 import { AboutSection } from '@/components/AboutSection';
 import { InitiativesSection } from '@/components/InitiativesSection';
+import { VisionariesSection } from '@/components/VisionariesSection';
 import { TimesSquareSection } from '@/components/TimesSquareSection';
 import { Footer } from '@/components/Footer';
 
@@ -20,6 +21,7 @@ const Index = () => {
         <TrustedBy />
         <AboutSection />
         <InitiativesSection />
+        <VisionariesSection />
         <TimesSquareSection />
         <Footer />
       </main>
