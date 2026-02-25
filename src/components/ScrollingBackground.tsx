@@ -3,8 +3,6 @@ import backgroundVideo from '@/assets/background-video.mp4';
 
 export const ScrollingBackground = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const targetTimeRef = useRef(0);
-  const rafRef = useRef<number>(0);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -12,29 +10,17 @@ export const ScrollingBackground = () => {
 
     video.pause();
 
-    const smoothUpdate = () => {
-      if (video.duration && isFinite(video.duration)) {
-        // Lerp toward target for smooth playback
-        const diff = targetTimeRef.current - video.currentTime;
-        if (Math.abs(diff) > 0.01) {
-          video.currentTime += diff * 0.1;
-        }
-      }
-      rafRef.current = requestAnimationFrame(smoothUpdate);
-    };
-
     const onScroll = () => {
       if (!video.duration || !isFinite(video.duration)) return;
       const scrollTop = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const progress = Math.min(Math.max(scrollTop / maxScroll, 0), 1);
-      targetTimeRef.current = progress * video.duration;
+      video.currentTime = progress * video.duration;
     };
 
     const start = () => {
       video.currentTime = 0;
       window.addEventListener('scroll', onScroll, { passive: true });
-      rafRef.current = requestAnimationFrame(smoothUpdate);
     };
 
     if (video.readyState >= 1) {
@@ -45,7 +31,6 @@ export const ScrollingBackground = () => {
 
     return () => {
       window.removeEventListener('scroll', onScroll);
-      cancelAnimationFrame(rafRef.current);
     };
   }, []);
 
@@ -57,7 +42,7 @@ export const ScrollingBackground = () => {
         playsInline
         preload="auto"
         className="w-full h-full object-cover"
-        style={{ opacity: 0.08 }}
+        style={{ opacity: 0.05 }}
       >
         <source src={backgroundVideo} type="video/mp4" />
       </video>
