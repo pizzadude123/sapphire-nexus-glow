@@ -1,6 +1,7 @@
 import { VerticalNav } from '@/components/VerticalNav';
 import { HeroSection } from '@/components/HeroSection';
 import { ScrollingBackground } from '@/components/ScrollingBackground';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { TrustedBy } from '@/components/TrustedBy';
 import { AboutSection } from '@/components/AboutSection';
 import { InitiativesSection } from '@/components/InitiativesSection';
@@ -10,6 +11,7 @@ import { Footer } from '@/components/Footer';
 const Index = () => {
   return (
     <div className="relative min-h-screen bg-background overflow-x-hidden">
+      <LoadingScreen />
       <VerticalNav />
       <ScrollingBackground />
 
