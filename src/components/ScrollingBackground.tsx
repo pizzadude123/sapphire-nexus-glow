@@ -7,29 +7,30 @@ gsap.registerPlugin(ScrollTrigger);
 
 export const ScrollingBackground = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Wait for video metadata to load
+    let ctx: gsap.Context;
+
     const onLoaded = () => {
-      const ctx = gsap.context(() => {
+      // Pause so we control playback manually
+      video.pause();
+
+      ctx = gsap.context(() => {
         ScrollTrigger.create({
-          trigger: document.body,
+          trigger: document.documentElement,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 1,
+          scrub: 0.5,
           onUpdate: (self) => {
-            if (video.duration) {
+            if (video.duration && isFinite(video.duration)) {
               video.currentTime = self.progress * video.duration;
             }
           },
         });
       });
-
-      return () => ctx.revert();
     };
 
     if (video.readyState >= 1) {
@@ -37,20 +38,20 @@ export const ScrollingBackground = () => {
     } else {
       video.addEventListener('loadedmetadata', onLoaded, { once: true });
     }
+
+    return () => {
+      if (ctx) ctx.revert();
+    };
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="fixed inset-0 z-0 pointer-events-none"
-      style={{ top: '100vh' }}
-    >
+    <div className="fixed inset-0 z-0 pointer-events-none">
       <video
         ref={videoRef}
         muted
         playsInline
         preload="auto"
-        className="w-full h-full object-cover opacity-20"
+        className="w-full h-full object-cover opacity-15"
       >
         <source src={backgroundVideo} type="video/mp4" />
       </video>
