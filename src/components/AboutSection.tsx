@@ -5,19 +5,13 @@ import aboutImage from '@/assets/about-sapphire.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const stats = [
-  { value: '12+', label: 'Active Ventures' },
-  { value: '50+', label: 'Global Partners' },
-  { value: '30+', label: 'Countries Reached' },
-  { value: '$2B+', label: 'Combined Impact' },
-];
 
 export const AboutSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
+  
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -101,26 +95,6 @@ export const AboutSection = () => {
         }
       }
 
-      // Stats counter animation — scale in with bounce
-      const statEls = statsRef.current?.querySelectorAll('.stat-item');
-      if (statEls) {
-        gsap.fromTo(
-          statEls,
-          { y: 60, opacity: 0, scale: 0.8 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.7,
-            stagger: 0.12,
-            ease: 'back.out(1.7)',
-            scrollTrigger: {
-              trigger: statsRef.current,
-              start: 'top 85%',
-            },
-          }
-        );
-      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -167,7 +141,6 @@ export const AboutSection = () => {
                 one roof. Every project carries the sapphire standard — a
                 commitment to excellence that defines everything we touch.
               </p>
-              <button className="about-para btn-sapphire">Our Story</button>
             </div>
           </div>
 
@@ -181,31 +154,9 @@ export const AboutSection = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
             </div>
-            {/* Decorative elements */}
-            <div className="absolute -top-4 -right-4 w-24 h-24 rounded-full border border-primary/20 animate-pulse-glow" />
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full border border-accent/10 animate-float" />
           </div>
         </div>
 
-        {/* Stats */}
-        <div
-          ref={statsRef}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
-        >
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="stat-item text-center p-6 rounded-2xl bg-card/50 border border-border/50 card-hover-glow"
-            >
-              <div className="text-3xl md:text-4xl font-extrabold text-gradient-sapphire mb-2 font-display">
-                {stat.value}
-              </div>
-              <div className="text-sm text-muted-foreground tracking-wide uppercase font-body">
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );
