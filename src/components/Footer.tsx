@@ -4,12 +4,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const socialLinks = [
-  { name: 'Twitter', href: '#' },
-  { name: 'LinkedIn', href: '#' },
-  { name: 'Instagram', href: '#' },
-  { name: 'YouTube', href: '#' },
-];
 
 const quickLinks = [
   { name: 'About', href: '#about' },
@@ -29,17 +23,16 @@ export const Footer = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Big text reveal — sliding in from left with scale
+      // Big text reveal — simple fade in (no glitchy slide)
       gsap.fromTo(
         bigTextRef.current,
-        { xPercent: -30, opacity: 0, scale: 0.9 },
+        { y: 40, opacity: 0 },
         {
-          xPercent: 0,
+          y: 0,
           opacity: 1,
-          scale: 1,
-          duration: 1.4,
-          ease: 'power4.out',
-          scrollTrigger: { trigger: bigTextRef.current, start: 'top 85%' },
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: bigTextRef.current, start: 'top 90%' },
         }
       );
 
@@ -187,22 +180,6 @@ export const Footer = () => {
               </div>
             </div>
 
-            <div>
-              <h4 className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-4 font-body">
-                Follow Us
-              </h4>
-              <div className="flex gap-3">
-                {socialLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="text-sm text-foreground/60 hover:text-primary transition-all duration-300 px-4 py-2.5 rounded-full border border-border/40 hover:border-primary/40 hover:shadow-[0_0_20px_hsl(var(--primary)/0.15)] font-body"
-                  >
-                    {link.name}
-                  </a>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
 

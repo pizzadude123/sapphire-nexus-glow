@@ -151,17 +151,24 @@ export const HeroSection = () => {
         },
       });
 
-      // Title fades out on scroll
-      gsap.to([titleLine1Ref.current, titleLine2Ref.current, subtitleRef.current, ctaRef.current], {
-        y: -60,
-        opacity: 0,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: '60% top',
-          end: 'bottom top',
-          scrub: true,
-        },
+      // Title fades out on scroll but reappears on scroll back
+      [titleLine1Ref.current, titleLine2Ref.current, subtitleRef.current, ctaRef.current].forEach((el) => {
+        if (!el) return;
+        gsap.fromTo(
+          el,
+          { y: 0, opacity: 1 },
+          {
+            y: -60,
+            opacity: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: '60% top',
+              end: 'bottom top',
+              scrub: true,
+            },
+          }
+        );
       });
     }, containerRef);
 

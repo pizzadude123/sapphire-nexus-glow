@@ -15,6 +15,10 @@ const initiatives = [
       'A prestigious Model United Nations platform where the next generation of leaders debate, negotiate, and drive diplomatic solutions on the global stage.',
     video: munVideo,
     number: '01',
+    links: [
+      { label: 'Hyderabad', href: 'https://www.instagram.com/sapphire_mun/' },
+      { label: 'Vizag', href: 'https://www.instagram.com/sapphiremunvizag/' },
+    ],
   },
   {
     name: 'Sapphire Racing League',
@@ -23,6 +27,9 @@ const initiatives = [
       'An elite racing competition pushing the boundaries of speed and engineering — where champions are forged on the track.',
     video: racingVideo,
     number: '02',
+    links: [
+      { label: 'Follow Us', href: 'https://www.instagram.com/sapphireracingleague/' },
+    ],
   },
   {
     name: 'League of Sapphire',
@@ -31,6 +38,9 @@ const initiatives = [
       'A multi-sport league uniting athletes across disciplines in fierce competition, team spirit, and the relentless pursuit of excellence.',
     video: sportsVideo,
     number: '03',
+    links: [
+      { label: 'Follow Us', href: 'https://www.instagram.com/leagueofsapphire/' },
+    ],
   },
 ];
 
@@ -76,10 +86,10 @@ const InitiativeCard = ({ initiative, index }: { initiative: typeof initiatives[
   return (
     <div
       ref={cardRef}
-      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-8 lg:gap-16 items-center`}
+      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-10 lg:gap-20 items-center`}
     >
       {/* Video */}
-      <div className="card-video relative w-full lg:w-1/2 aspect-video rounded-lg overflow-hidden opacity-0">
+      <div className="card-video relative w-full lg:w-[55%] aspect-video rounded-xl overflow-hidden opacity-0 shadow-2xl shadow-primary/5">
         <video
           autoPlay
           muted
@@ -90,13 +100,13 @@ const InitiativeCard = ({ initiative, index }: { initiative: typeof initiatives[
         >
           <source src={initiative.video} type="video/mp4" />
         </video>
-        {/* Corner dots */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent pointer-events-none" />
         <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-primary/30 pointer-events-none" />
         <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-primary/30 pointer-events-none" />
       </div>
 
       {/* Content */}
-      <div className="relative w-full lg:w-1/2">
+      <div className="relative w-full lg:w-[45%]">
         <span
           className="card-number absolute -top-8 lg:-top-16 text-[6rem] lg:text-[10rem] font-extrabold leading-none text-primary/10 select-none font-display"
           style={{ fontFamily: "'Times New Roman', Georgia, serif", [isReversed ? 'left' : 'right']: 0 }}
@@ -121,10 +131,18 @@ const InitiativeCard = ({ initiative, index }: { initiative: typeof initiatives[
           {initiative.description}
         </p>
 
-        <div className="card-cta mt-6 opacity-0">
-          <button className="btn-outline-sapphire text-sm tracking-widest uppercase">
-            Learn More →
-          </button>
+        <div className="card-cta mt-8 flex flex-wrap gap-3 opacity-0">
+          {initiative.links.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-outline-sapphire text-sm tracking-widest uppercase inline-flex items-center gap-2"
+            >
+              {link.label} →
+            </a>
+          ))}
         </div>
       </div>
     </div>
@@ -172,7 +190,7 @@ export const InitiativesSection = () => {
       </div>
 
       {/* Initiative cards */}
-      <div className="max-w-7xl mx-auto flex flex-col gap-24 md:gap-36">
+      <div className="max-w-7xl mx-auto flex flex-col gap-28 md:gap-40">
         {initiatives.map((initiative, i) => (
           <InitiativeCard key={initiative.number} initiative={initiative} index={i} />
         ))}
