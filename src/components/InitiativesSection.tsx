@@ -138,7 +138,11 @@ const InitiativeCard = ({ initiative, index }: { initiative: typeof initiatives[
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-outline-sapphire text-sm tracking-widest uppercase inline-flex items-center gap-2"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(link.href, '_blank', 'noopener,noreferrer');
+              }}
+              className="btn-outline-sapphire text-sm tracking-widest uppercase inline-flex items-center gap-2 cursor-pointer"
             >
               {link.label} →
             </a>
