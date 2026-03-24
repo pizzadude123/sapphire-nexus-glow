@@ -52,30 +52,30 @@ const InitiativeCard = ({ initiative, index }: { initiative: typeof initiatives[
     if (!card) return;
 
     const ctx = gsap.context(() => {
-      const video = card.querySelector('.card-video');
-      const number = card.querySelector('.card-number');
-      const name = card.querySelector('.card-name');
-      const tagline = card.querySelector('.card-tagline');
-      const desc = card.querySelector('.card-desc');
-      const line = card.querySelector('.card-line');
-      const cta = card.querySelector('.card-cta');
+      const video = card.querySelector('.init-video');
+      const number = card.querySelector('.init-number');
+      const name = card.querySelector('.init-name');
+      const tagline = card.querySelector('.init-tagline');
+      const desc = card.querySelector('.init-desc');
+      const line = card.querySelector('.init-line');
+      const links = card.querySelector('.init-links');
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: card,
-          start: 'top 75%',
-          end: 'top 30%',
+          start: 'top 80%',
+          end: 'top 40%',
           toggleActions: 'play none none reverse',
         },
       });
 
-      tl.fromTo(video, { clipPath: 'inset(10% 10% 10% 10%)', opacity: 0 }, { clipPath: 'inset(0% 0% 0% 0%)', opacity: 1, duration: 1, ease: 'power3.out' }, 0)
-        .fromTo(number, { x: index % 2 === 0 ? -60 : 60, opacity: 0 }, { x: 0, opacity: 0.1, duration: 0.8, ease: 'power3.out' }, 0.1)
-        .fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power3.out' }, 0.2)
-        .fromTo(name, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, 0.3)
-        .fromTo(tagline, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, 0.45)
-        .fromTo(desc, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, 0.55)
-        .fromTo(cta, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: 'power3.out' }, 0.65);
+      tl.fromTo(video, { scale: 1.1, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: 'power4.out' }, 0)
+        .fromTo(number, { y: 40, opacity: 0 }, { y: 0, opacity: 0.08, duration: 0.8, ease: 'power3.out' }, 0.2)
+        .fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: 'power3.out' }, 0.3)
+        .fromTo(name, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, 0.35)
+        .fromTo(tagline, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.5)
+        .fromTo(desc, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.6)
+        .fromTo(links, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, 0.7);
     }, card);
 
     return () => ctx.revert();
@@ -84,69 +84,73 @@ const InitiativeCard = ({ initiative, index }: { initiative: typeof initiatives[
   const isReversed = index % 2 !== 0;
 
   return (
-    <div
-      ref={cardRef}
-      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-10 lg:gap-20 items-center`}
-    >
-      {/* Video */}
-      <div className="card-video relative w-full lg:w-[55%] aspect-video rounded-xl overflow-hidden opacity-0 shadow-2xl shadow-primary/5">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover"
-        >
-          <source src={initiative.video} type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent pointer-events-none" />
-        <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-primary/30 pointer-events-none" />
-        <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-primary/30 pointer-events-none" />
-      </div>
+    <div ref={cardRef} className="relative">
+      {/* Large background number */}
+      <span
+        className="init-number absolute -top-6 font-extrabold text-[8rem] md:text-[12rem] leading-none text-foreground/[0.03] select-none pointer-events-none z-0"
+        style={{
+          fontFamily: "'Times New Roman', Georgia, serif",
+          ...(isReversed ? { right: 0 } : { left: 0 }),
+        }}
+      >
+        {initiative.number}
+      </span>
 
-      {/* Content */}
-      <div className="relative w-full lg:w-[45%]">
-        <span
-          className="card-number absolute -top-8 lg:-top-16 text-[6rem] lg:text-[10rem] font-extrabold leading-none text-primary/10 select-none font-display"
-          style={{ fontFamily: "'Times New Roman', Georgia, serif", [isReversed ? 'left' : 'right']: 0 }}
-        >
-          {initiative.number}
-        </span>
+      <div className={`relative z-10 flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-8 lg:gap-16 items-center`}>
+        {/* Video */}
+        <div className="init-video w-full lg:w-[58%] aspect-video rounded-md overflow-hidden opacity-0">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            className="w-full h-full object-cover"
+          >
+            <source src={initiative.video} type="video/mp4" />
+          </video>
+        </div>
 
-        <div className="card-line h-[2px] w-16 bg-gradient-to-r from-primary to-accent mb-6 origin-left" style={{ transform: 'scaleX(0)' }} />
+        {/* Content */}
+        <div className={`w-full lg:w-[42%] ${isReversed ? 'lg:text-right' : ''}`}>
+          <div
+            className={`init-line h-[2px] w-14 bg-gradient-to-r from-primary to-accent mb-5 ${isReversed ? 'lg:ml-auto origin-right' : 'origin-left'}`}
+            style={{ transform: 'scaleX(0)' }}
+          />
 
-        <h3
-          className="card-name text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter leading-none mb-3 text-foreground opacity-0"
-          style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
-        >
-          {initiative.name}
-        </h3>
+          <h3
+            className="init-name text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.05] mb-3 text-foreground opacity-0"
+            style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
+          >
+            {initiative.name}
+          </h3>
 
-        <p className="card-tagline text-lg md:text-xl text-accent font-semibold tracking-wide mb-4 font-body opacity-0">
-          {initiative.tagline}
-        </p>
+          <p className="init-tagline text-accent font-semibold tracking-wide text-base md:text-lg mb-4 font-body opacity-0">
+            {initiative.tagline}
+          </p>
 
-        <p className="card-desc text-base text-muted-foreground max-w-lg leading-relaxed font-body opacity-0">
-          {initiative.description}
-        </p>
+          <p className="init-desc text-sm md:text-base text-muted-foreground max-w-md leading-relaxed font-body opacity-0">
+            {initiative.description}
+          </p>
 
-        <div className="card-cta mt-8 flex flex-wrap gap-3 opacity-0">
-          {initiative.links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(link.href, '_blank', 'noopener,noreferrer');
-              }}
-              className="btn-outline-sapphire text-sm tracking-widest uppercase inline-flex items-center gap-2 cursor-pointer"
-            >
-              {link.label} →
-            </a>
-          ))}
+          <div className={`init-links mt-6 flex flex-wrap gap-3 opacity-0 ${isReversed ? 'lg:justify-end' : ''}`}>
+            {initiative.links.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(link.href, '_blank', 'noopener,noreferrer');
+                }}
+                className="inline-flex items-center gap-1.5 text-xs tracking-[0.2em] uppercase font-medium text-primary border border-primary/20 px-5 py-2.5 rounded-sm hover:bg-primary/10 hover:border-primary/40 transition-all duration-300 cursor-pointer"
+              >
+                {link.label}
+                <span className="text-primary/60">→</span>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -180,7 +184,7 @@ export const InitiativesSection = () => {
   return (
     <section id="initiatives" className="relative py-24 md:py-32 px-6 md:px-12 lg:px-20">
       {/* Heading */}
-      <div ref={headingRef} className="text-center mb-20 md:mb-28">
+      <div ref={headingRef} className="text-center mb-20 md:mb-28 opacity-0">
         <p className="text-xs tracking-[0.4em] uppercase text-accent mb-4 font-body">
           Our Ecosystem
         </p>
@@ -193,8 +197,8 @@ export const InitiativesSection = () => {
         </p>
       </div>
 
-      {/* Initiative cards */}
-      <div className="max-w-7xl mx-auto flex flex-col gap-28 md:gap-40">
+      {/* Cards */}
+      <div className="max-w-7xl mx-auto flex flex-col gap-32 md:gap-44">
         {initiatives.map((initiative, i) => (
           <InitiativeCard key={initiative.number} initiative={initiative} index={i} />
         ))}
