@@ -9,6 +9,7 @@ const sections = [
   { id: 'trusted', label: 'Partners' },
   { id: 'about', label: 'About' },
   { id: 'initiatives', label: 'Projects' },
+  { id: 'founders', label: 'Founders' },
   { id: 'visionaries', label: 'Visionaries' },
   { id: 'showcase', label: 'Showcase' },
   { id: 'footer', label: 'Contact' },
