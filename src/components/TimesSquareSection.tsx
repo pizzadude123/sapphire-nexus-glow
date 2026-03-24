@@ -8,17 +8,13 @@ gsap.registerPlugin(ScrollTrigger);
 const showcaseItems = [
   {
     title: 'Times Square, NYC',
-    subtitle: 'Digital Billboard Campaign',
+    description: "Our flagship campaign illuminated one of the world's most iconic intersections.",
     date: '2026',
-    description:
-      "Our flagship campaign illuminated one of the world's most iconic intersections.",
   },
   {
     title: 'Sapphire on Wheels',
-    subtitle: 'Premium Car Branding',
+    description: 'Sapphire branding showcased on premium cars, turning heads on streets worldwide.',
     date: '2026',
-    description:
-      'Sapphire branding showcased on premium cars, turning heads on the streets worldwide.',
   },
 ];
 
@@ -30,174 +26,65 @@ export const TimesSquareSection = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const headingWords = headingRef.current?.querySelectorAll('.reveal-word');
-      if (headingWords) {
-        gsap.fromTo(
-          headingWords,
-          { y: 80, opacity: 0, rotateX: 40 },
-          {
-            y: 0,
-            opacity: 1,
-            rotateX: 0,
-            duration: 1,
-            stagger: 0.08,
-            ease: 'power4.out',
-            scrollTrigger: { trigger: headingRef.current, start: 'top 80%' },
-          }
-        );
-      }
+      gsap.fromTo(headingRef.current, { y: 50, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: headingRef.current, start: 'top 80%' },
+      });
 
-      gsap.fromTo(
-        videoRef.current,
-        { scale: 0.7, opacity: 0, borderRadius: '2rem' },
-        {
-          scale: 1,
-          opacity: 1,
-          borderRadius: '1rem',
-          duration: 1.4,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: videoRef.current,
-            start: 'top 85%',
-            end: 'top 20%',
-            scrub: 1,
-          },
-        }
-      );
+      gsap.fromTo(videoRef.current, { y: 60, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
+        scrollTrigger: { trigger: videoRef.current, start: 'top 85%' },
+      });
 
       const cards = cardsRef.current?.querySelectorAll('.showcase-card');
       if (cards) {
-        gsap.fromTo(
-          cards,
-          { y: 100, opacity: 0, rotateY: 8 },
-          {
-            y: 0,
-            opacity: 1,
-            rotateY: 0,
-            duration: 1,
-            stagger: 0.2,
-            ease: 'power3.out',
-            scrollTrigger: { trigger: cardsRef.current, start: 'top 80%' },
-          }
-        );
+        gsap.fromTo(cards, { y: 50, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out',
+          scrollTrigger: { trigger: cardsRef.current, start: 'top 80%' },
+        });
       }
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  const headingText = 'As Seen on Times Square';
-
   return (
-    <section
-      id="showcase"
-      ref={sectionRef}
-      className="relative py-32 md:py-44 px-6 overflow-hidden"
-    >
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full pointer-events-none opacity-[0.04]"
-        style={{ background: 'radial-gradient(circle, hsl(var(--accent)), transparent 70%)' }}
-      />
-
-      <div className="max-w-7xl mx-auto">
-        <div ref={headingRef} className="text-center mb-6" style={{ perspective: '800px' }}>
-          <p className="reveal-word text-xs tracking-[0.4em] uppercase text-accent mb-4 font-body">
-            Global Presence
-          </p>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter leading-tight font-display">
-            {headingText.split(' ').map((word, i) => (
-              <span key={i} className="reveal-word inline-block mr-[0.3em]">
-                {word === 'Times' || word === 'Square' ? (
-                  <span className="text-gradient-gold">{word}</span>
-                ) : (
-                  word
-                )}
-              </span>
-            ))}
+    <section id="showcase" ref={sectionRef} className="relative py-28 md:py-36 px-6 overflow-hidden">
+      <div className="max-w-6xl mx-auto">
+        {/* Heading */}
+        <div ref={headingRef} className="text-center mb-16 opacity-0">
+          <p className="text-[10px] tracking-[0.4em] uppercase text-accent mb-4 font-body">Global Presence</p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tighter leading-tight font-display">
+            As Seen on <span className="text-gradient-gold">Times Square</span>
           </h2>
-          <p className="reveal-word text-muted-foreground mt-6 max-w-2xl mx-auto text-lg font-body">
-            Our brand shines on the world's most prestigious stages — from iconic billboards to immersive digital installations.
+          <p className="text-muted-foreground mt-4 max-w-lg mx-auto text-sm font-body">
+            Our brand shines on the world's most prestigious stages.
           </p>
         </div>
 
-        {/* Impact counter */}
-        <div className="flex justify-center my-16">
-          <div className="text-center">
-            <div
-              className="text-4xl md:text-5xl font-extrabold text-gradient-gold font-display mb-1"
-              style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
-            >
-              Multiple
-            </div>
-            <div className="text-xs tracking-[0.3em] uppercase text-muted-foreground font-body">
-              Campaigns
-            </div>
-          </div>
-        </div>
-
-        {/* Featured video */}
-        <div ref={videoRef} className="relative rounded-2xl overflow-hidden mb-20 group">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-105"
-          >
+        {/* Video */}
+        <div ref={videoRef} className="relative rounded-sm overflow-hidden mb-16 opacity-0">
+          <video autoPlay muted loop playsInline className="w-full aspect-video object-cover">
             <source src={timesSquareVideo} type="video/mp4" />
           </video>
-
-          <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent pointer-events-none" />
-
-          <div className="absolute bottom-8 left-8 right-8 flex items-end justify-between">
-            <div>
-              <span className="text-xs tracking-[0.3em] uppercase text-accent font-body">
-                Featured
-              </span>
-              <h3
-                className="text-3xl md:text-4xl font-extrabold mt-1 text-glow-sapphire"
-                style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
-              >
-                Times Square Takeover
-              </h3>
-            </div>
-            <div className="flex items-center gap-2 bg-card/60 backdrop-blur-sm px-4 py-2 rounded-full border border-border/30">
-              <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
-              <span className="text-[10px] tracking-wider uppercase text-foreground/80 font-body">
-                Live
-              </span>
-            </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute bottom-6 left-6">
+            <span className="text-[10px] tracking-[0.3em] uppercase text-accent font-body">Featured</span>
+            <h3 className="text-xl md:text-2xl font-bold mt-1 text-foreground"
+              style={{ fontFamily: "'Times New Roman', Georgia, serif" }}>
+              Times Square Takeover
+            </h3>
           </div>
-
-          <div className="absolute top-6 left-6 w-10 h-10 border-l-2 border-t-2 border-primary/40 pointer-events-none" />
-          <div className="absolute top-6 right-6 w-10 h-10 border-r-2 border-t-2 border-primary/40 pointer-events-none" />
-          <div className="absolute bottom-6 left-6 w-10 h-10 border-l-2 border-b-2 border-primary/40 pointer-events-none" />
-          <div className="absolute bottom-6 right-6 w-10 h-10 border-r-2 border-b-2 border-primary/40 pointer-events-none" />
         </div>
 
-        {/* Showcase cards */}
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ perspective: '1000px' }}>
-          {showcaseItems.map((item, index) => (
-            <div
-              key={item.title}
-              className="showcase-card group relative p-8 rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden transition-all duration-500 hover:border-primary/40 hover:shadow-[0_0_40px_hsl(var(--primary)/0.1)]"
-            >
-              <span
-                className="absolute top-4 right-6 text-6xl font-extrabold text-primary/5 select-none"
-                style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
-              >
-                0{index + 1}
-              </span>
-
-              <span className="inline-block text-[10px] tracking-[0.3em] uppercase text-accent mb-4 px-3 py-1 rounded-full border border-accent/20 font-body">
-                {item.date}
-              </span>
-              <h3 className="text-xl font-bold mb-1 group-hover:text-primary transition-colors duration-300 font-display">
-                {item.title}
-              </h3>
-              <p className="text-sm text-accent mb-4 font-body">{item.subtitle}</p>
-              <p className="text-sm text-muted-foreground leading-relaxed font-body">
-                {item.description}
-              </p>
+        {/* Cards */}
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {showcaseItems.map((item) => (
+            <div key={item.title}
+              className="showcase-card p-6 rounded-sm border border-border/30 bg-card/20 opacity-0 hover:border-border/60 transition-colors duration-300">
+              <span className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground/60 font-body">{item.date}</span>
+              <h3 className="text-lg font-bold mt-2 mb-2 text-foreground font-display">{item.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed font-body">{item.description}</p>
             </div>
           ))}
         </div>
