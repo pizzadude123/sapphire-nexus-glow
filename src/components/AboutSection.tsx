@@ -1,21 +1,18 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import aboutImage from '@/assets/about-sapphire.jpg';
+import { SapphireScene } from './SapphireScene';
 
 gsap.registerPlugin(ScrollTrigger);
-
 
 export const AboutSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  
+  const sceneRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Heading — each word slides up
       const words = headingRef.current?.querySelectorAll('.word');
       if (words) {
         gsap.fromTo(
@@ -36,7 +33,6 @@ export const AboutSection = () => {
         );
       }
 
-      // Text paragraphs — stagger reveal
       const paras = textRef.current?.querySelectorAll('.about-para');
       if (paras) {
         gsap.fromTo(
@@ -56,14 +52,11 @@ export const AboutSection = () => {
         );
       }
 
-      // Image — parallax + reveal
-      if (imageRef.current) {
-        const img = imageRef.current.querySelector('img');
+      if (sceneRef.current) {
         gsap.fromTo(
-          imageRef.current,
-          { x: 80, opacity: 0, scale: 0.9 },
+          sceneRef.current,
+          { opacity: 0, scale: 0.8 },
           {
-            x: 0,
             opacity: 1,
             scale: 1,
             duration: 1.2,
@@ -75,26 +68,18 @@ export const AboutSection = () => {
           }
         );
 
-        // Inner image parallax
-        if (img) {
-          gsap.fromTo(
-            img,
-            { yPercent: -10, scale: 1.15 },
-            {
-              yPercent: 10,
-              scale: 1,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: imageRef.current,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: 1,
-              },
-            }
-          );
-        }
+        // Rotate on scroll
+        gsap.to(sceneRef.current, {
+          rotateY: 60,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        });
       }
-
     }, sectionRef);
 
     return () => ctx.revert();
@@ -103,13 +88,8 @@ export const AboutSection = () => {
   const headingWords = ['Defining', 'the', 'Future,', 'One', 'Venture', 'at', 'a', 'Time'];
 
   return (
-    <section
-      id="about"
-      ref={sectionRef}
-      className="relative py-24 md:py-32 px-6"
-    >
+    <section id="about" ref={sectionRef} className="relative py-24 md:py-32 px-6">
       <div className="max-w-7xl mx-auto">
-        {/* Main content grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
           {/* Text side */}
           <div>
@@ -144,19 +124,17 @@ export const AboutSection = () => {
             </div>
           </div>
 
-          {/* Image side */}
-          <div ref={imageRef} className="relative">
-            <div className="relative rounded-2xl overflow-hidden aspect-square">
-              <img
-                src={aboutImage}
-                alt="About House of Sapphire"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-            </div>
+          {/* 3D Sapphire */}
+          <div ref={sceneRef} className="relative aspect-square max-w-[500px] mx-auto w-full">
+            <Suspense fallback={
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="w-16 h-16 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+              </div>
+            }>
+              <SapphireScene />
+            </Suspense>
           </div>
         </div>
-
       </div>
     </section>
   );
