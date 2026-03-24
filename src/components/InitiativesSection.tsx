@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import munVideo from '@/assets/initiative-mun.mp4';
-import racingVideo from '@/assets/initiative-racing.mp4';
-import sportsVideo from '@/assets/initiative-sports.mp4';
+import logoMun from '@/assets/logo-mun.png';
+import logoRacing from '@/assets/logo-racing.png';
+import logoLos from '@/assets/logo-los.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,7 +13,7 @@ const initiatives = [
     tagline: 'Where Voices Shape the World',
     description:
       'A prestigious Model United Nations platform where the next generation of leaders debate, negotiate, and drive diplomatic solutions on the global stage.',
-    video: munVideo,
+    logo: logoMun,
     number: '01',
     links: [
       { label: 'Hyderabad', href: 'https://www.instagram.com/sapphire_mun/' },
@@ -25,7 +25,7 @@ const initiatives = [
     tagline: 'Speed. Precision. Glory.',
     description:
       'An elite racing competition pushing the boundaries of speed and engineering — where champions are forged on the track.',
-    video: racingVideo,
+    logo: logoRacing,
     number: '02',
     links: [
       { label: 'Follow Us', href: 'https://www.instagram.com/sapphireracingleague/' },
@@ -36,7 +36,7 @@ const initiatives = [
     tagline: 'Compete. Conquer. Celebrate.',
     description:
       'A multi-sport league uniting athletes across disciplines in fierce competition, team spirit, and the relentless pursuit of excellence.',
-    video: sportsVideo,
+    logo: logoLos,
     number: '03',
     links: [
       { label: 'Follow Us', href: 'https://www.instagram.com/leagueofsapphire/' },
@@ -52,8 +52,7 @@ const InitiativeCard = ({ initiative, index }: { initiative: typeof initiatives[
     if (!card) return;
 
     const ctx = gsap.context(() => {
-      const video = card.querySelector('.init-video');
-      const number = card.querySelector('.init-number');
+      const logo = card.querySelector('.init-logo');
       const name = card.querySelector('.init-name');
       const tagline = card.querySelector('.init-tagline');
       const desc = card.querySelector('.init-desc');
@@ -69,8 +68,7 @@ const InitiativeCard = ({ initiative, index }: { initiative: typeof initiatives[
         },
       });
 
-      tl.fromTo(video, { scale: 1.1, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: 'power4.out' }, 0)
-        .fromTo(number, { y: 40, opacity: 0 }, { y: 0, opacity: 0.08, duration: 0.8, ease: 'power3.out' }, 0.2)
+      tl.fromTo(logo, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 1, ease: 'power4.out' }, 0)
         .fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: 'power3.out' }, 0.3)
         .fromTo(name, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, 0.35)
         .fromTo(tagline, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.5)
@@ -85,38 +83,26 @@ const InitiativeCard = ({ initiative, index }: { initiative: typeof initiatives[
 
   return (
     <div ref={cardRef} className="relative">
-      {/* Large background number */}
-      <span
-        className="init-number absolute -top-6 font-extrabold text-[8rem] md:text-[12rem] leading-none text-foreground/[0.03] select-none pointer-events-none z-0"
-        style={{
-          fontFamily: "'Times New Roman', Georgia, serif",
-          ...(isReversed ? { right: 0 } : { left: 0 }),
-        }}
-      >
-        {initiative.number}
-      </span>
-
       <div className={`relative z-10 flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-8 lg:gap-16 items-center`}>
-        {/* Video */}
-        <div className="init-video w-full lg:w-[58%] aspect-video rounded-md overflow-hidden opacity-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            className="w-full h-full object-cover"
-          >
-            <source src={initiative.video} type="video/mp4" />
-          </video>
+        {/* Logo */}
+        <div className="init-logo w-full lg:w-[45%] flex items-center justify-center opacity-0">
+          <div className="w-full max-w-[400px] aspect-square flex items-center justify-center p-8 rounded-lg bg-secondary/30 border border-border/30">
+            <img
+              src={initiative.logo}
+              alt={initiative.name}
+              className="w-full h-full object-contain"
+            />
+          </div>
         </div>
 
         {/* Content */}
-        <div className={`w-full lg:w-[42%] ${isReversed ? 'lg:text-right' : ''}`}>
+        <div className={`w-full lg:w-[55%] ${isReversed ? 'lg:text-right' : ''}`}>
           <div
             className={`init-line h-[2px] w-14 bg-gradient-to-r from-primary to-accent mb-5 ${isReversed ? 'lg:ml-auto origin-right' : 'origin-left'}`}
             style={{ transform: 'scaleX(0)' }}
           />
+
+          <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-2 font-body">{initiative.number}</p>
 
           <h3
             className="init-name text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.05] mb-3 text-foreground opacity-0"
@@ -129,7 +115,7 @@ const InitiativeCard = ({ initiative, index }: { initiative: typeof initiatives[
             {initiative.tagline}
           </p>
 
-          <p className="init-desc text-sm md:text-base text-muted-foreground max-w-md leading-relaxed font-body opacity-0">
+          <p className="init-desc text-sm md:text-base text-muted-foreground max-w-md leading-relaxed font-body opacity-0" style={isReversed ? { marginLeft: 'auto' } : {}}>
             {initiative.description}
           </p>
 
